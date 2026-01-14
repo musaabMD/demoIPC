@@ -8,25 +8,48 @@ const tabColors = {
   hematology: 'from-orange-500 to-orange-700',
   aku: 'from-cyan-500 to-cyan-700',
   oncology: 'from-green-500 to-green-700',
+  labs: 'from-indigo-500 to-indigo-700',
 };
 
-export default function DepartmentTabs({ departments, selected, onSelect }) {
+export default function DepartmentTabs({ departments, selected, onSelect, isDarkMode, showLabs, onLabsClick, isLabsActive }) {
+  const theme = {
+    bg: isDarkMode ? 'bg-slate-800/50 border-slate-700' : 'bg-gray-100 border-gray-200',
+    inactive: isDarkMode ? 'bg-slate-700/50 text-gray-400 hover:bg-slate-600/50 hover:text-white' : 'bg-white text-gray-600 hover:bg-gray-200 hover:text-gray-900 border border-gray-200',
+  };
+
   return (
-    <div className="bg-slate-800/50 border-b border-slate-700 px-6 py-3">
-      <div className="flex gap-2">
+    <div className={`${theme.bg} border-b px-6 py-3`}>
+      <div className="flex justify-center gap-2">
         {departments.map((dept) => (
           <button
             key={dept.id}
             onClick={() => onSelect(dept)}
-            className={`px-6 py-3 rounded-xl font-semibold text-lg transition-all ${
-              selected.id === dept.id
-                ? `bg-gradient-to-r ${tabColors[dept.id]} text-white shadow-lg scale-105`
-                : 'bg-slate-700/50 text-gray-400 hover:bg-slate-600/50 hover:text-white'
+            className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all ${
+              selected.id === dept.id && !isLabsActive
+                ? `bg-gradient-to-r ${tabColors[dept.id]} text-white shadow-lg`
+                : theme.inactive
             }`}
           >
             {dept.name}
           </button>
         ))}
+        
+        {/* Labs & Cultures Tab - positioned after Oncology */}
+        {showLabs && (
+          <button
+            onClick={onLabsClick}
+            className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2 ${
+              isLabsActive
+                ? `bg-gradient-to-r ${tabColors.labs} text-white shadow-lg`
+                : theme.inactive
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+            Labs & Cultures
+          </button>
+        )}
       </div>
     </div>
   );
