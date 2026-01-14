@@ -6,7 +6,6 @@ const ISOLATION_COLORS = {
   'Airborne': { dark: 'bg-red-500/30 border-red-500 text-red-400', light: 'bg-red-100 border-red-400 text-red-700' },
   'Droplet': { dark: 'bg-blue-500/30 border-blue-500 text-blue-400', light: 'bg-blue-100 border-blue-400 text-blue-700' },
   'Contact': { dark: 'bg-yellow-500/30 border-yellow-500 text-yellow-400', light: 'bg-yellow-100 border-yellow-400 text-yellow-700' },
-  'Protective': { dark: 'bg-green-500/30 border-green-500 text-green-400', light: 'bg-green-100 border-green-400 text-green-700' },
   'None': { dark: 'bg-slate-700/50 border-slate-600 text-gray-400', light: 'bg-gray-100 border-gray-300 text-gray-600' },
 };
 
@@ -22,7 +21,6 @@ export default function RoomOverview({ patients, isDarkMode }) {
     if (filter === 'airborne') return occupiedPatients.filter(p => p.isolation === 'Airborne');
     if (filter === 'droplet') return occupiedPatients.filter(p => p.isolation === 'Droplet');
     if (filter === 'contact') return occupiedPatients.filter(p => p.isolation === 'Contact');
-    if (filter === 'protective') return occupiedPatients.filter(p => p.isolation === 'Protective');
     if (filter === 'isolated') return occupiedPatients.filter(p => p.isolation !== 'None');
     if (filter === 'none') return occupiedPatients.filter(p => p.isolation === 'None');
     return occupiedPatients;
@@ -35,7 +33,6 @@ export default function RoomOverview({ patients, isDarkMode }) {
     airborne: occupiedPatients.filter(p => p.isolation === 'Airborne').length,
     droplet: occupiedPatients.filter(p => p.isolation === 'Droplet').length,
     contact: occupiedPatients.filter(p => p.isolation === 'Contact').length,
-    protective: occupiedPatients.filter(p => p.isolation === 'Protective').length,
     none: occupiedPatients.filter(p => p.isolation === 'None').length,
   };
 
@@ -86,16 +83,10 @@ export default function RoomOverview({ patients, isDarkMode }) {
           Contact ({counts.contact})
         </button>
         <button
-          onClick={() => setFilter('protective')}
-          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'protective' ? 'bg-green-600 text-white' : theme.filterBtn}`}
-        >
-          Protective ({counts.protective})
-        </button>
-        <button
           onClick={() => setFilter('isolated')}
           className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'isolated' ? 'bg-purple-600 text-white' : theme.filterBtn}`}
         >
-          Isolated ({counts.airborne + counts.droplet + counts.contact + counts.protective})
+          Isolated ({counts.airborne + counts.droplet + counts.contact})
         </button>
         <button
           onClick={() => setFilter('none')}
@@ -157,7 +148,7 @@ export default function RoomOverview({ patients, isDarkMode }) {
 
       {/* Summary */}
       <div className={`rounded-xl p-2 md:p-3 ${isDarkMode ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 text-center">
+        <div className="grid grid-cols-5 gap-2 md:gap-4 text-center">
           <div>
             <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>{counts.airborne}</div>
             <div className={`text-xs ${theme.textMuted}`}>Airborne</div>
@@ -169,10 +160,6 @@ export default function RoomOverview({ patients, isDarkMode }) {
           <div>
             <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-yellow-400' : 'text-yellow-600'}`}>{counts.contact}</div>
             <div className={`text-xs ${theme.textMuted}`}>Contact</div>
-          </div>
-          <div>
-            <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>{counts.protective}</div>
-            <div className={`text-xs ${theme.textMuted}`}>Protective</div>
           </div>
           <div>
             <div className={`text-lg md:text-2xl font-bold ${theme.textMuted}`}>{counts.none}</div>

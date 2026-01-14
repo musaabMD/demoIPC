@@ -11,6 +11,7 @@ import ScreeningStatus from '@/components/ScreeningStatus';
 import DeviceAlerts from '@/components/DeviceAlerts';
 import RoomOverview from '@/components/RoomOverview';
 import LabsTab from '@/components/LabsTab';
+import SplashScreen from '@/components/SplashScreen';
 
 // Hospitals
 const HOSPITALS = [
@@ -45,7 +46,7 @@ const generatePatients = (department) => {
   const diagnoses = ['Sepsis', 'Pneumonia', 'ARDS', 'Heart Failure', 'Renal Failure', 'Post-Op', 'Trauma', 'Stroke'];
   const deviceTypes = ['Central Line', 'Ventilator', 'Foley Catheter', 'PICC Line', 'Arterial Line'];
   const deviceSites = ['Subclavian', 'Internal Jugular', 'Femoral', 'Radial', 'Brachial'];
-  const isolationTypes = ['None', 'Contact', 'Droplet', 'Airborne', 'Protective'];
+  const isolationTypes = ['None', 'Contact', 'Droplet', 'Airborne'];
   
   const patients = [];
   const bedCount = department === 'nicu' ? 20 : department === 'picu' ? 15 : 12;
@@ -127,6 +128,7 @@ const OUTBREAKS = [
 ];
 
 export default function Home() {
+  const [showSplash, setShowSplash] = useState(true);
   const [showLabs, setShowLabs] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState(HOSPITALS[0]);
   const [selectedDepartment, setSelectedDepartment] = useState(DEPARTMENTS[0]);
@@ -142,19 +144,19 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (isClient) {
+    if (isClient && !showSplash) {
       setPatients(generatePatients(selectedDepartment.id));
       setRates(generateRates(selectedHospital.id * 100 + selectedDepartment.id.charCodeAt(0)));
     }
-  }, [selectedHospital, selectedDepartment, isClient]);
+  }, [selectedHospital, selectedDepartment, isClient, showSplash]);
 
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || showSplash) return;
     const interval = setInterval(() => {
       setLastUpdate(new Date());
     }, 60000);
     return () => clearInterval(interval);
-  }, [isClient]);
+  }, [isClient, showSplash]);
 
   const occupiedPatients = patients.filter(p => !p.empty);
   const totalPatients = occupiedPatients.length;
@@ -176,6 +178,11 @@ export default function Home() {
     text: isDarkMode ? 'text-white' : 'text-gray-900',
     textMuted: isDarkMode ? 'text-gray-400' : 'text-gray-600',
   };
+
+  // Show splash screen
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
 
   if (!isClient) {
     return (
