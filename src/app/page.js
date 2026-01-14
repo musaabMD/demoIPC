@@ -181,7 +181,7 @@ export default function Home() {
     return (
       <div className={`min-h-screen ${theme.bg} flex items-center justify-center`}>
         <div className="text-center">
-          <div className={`text-2xl ${theme.text} font-bold`}>ICU Infection Control Dashboard</div>
+          <div className={`text-xl md:text-2xl ${theme.text} font-bold`}>ICU Infection Control Dashboard</div>
           <div className={theme.textMuted + " mt-2"}>Loading...</div>
         </div>
       </div>
@@ -214,9 +214,9 @@ export default function Home() {
         <LabsTab isDarkMode={isDarkMode} />
       ) : (
         /* Dashboard Content */
-        <main className="p-4 space-y-4">
+        <main className="p-2 md:p-4 space-y-3 md:space-y-4">
           {/* Top Row - Key Metrics */}
-          <div className="grid grid-cols-6 gap-3">
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
             <MetricCard label="Total Patients" value={totalPatients} color="blue" isDarkMode={isDarkMode} />
             <MetricCard label="On Devices" value={patientsWithDevices} color="purple" isDarkMode={isDarkMode} />
             <MetricCard label="Patient Days" value={totalPatientDays} color="cyan" isDarkMode={isDarkMode} />
@@ -229,11 +229,11 @@ export default function Home() {
           <RoomOverview patients={patients} isDarkMode={isDarkMode} />
 
           {/* Second Row - Infection Rates & Scores */}
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-4">
+            <div className="lg:col-span-8">
               {rates && <InfectionRates rates={rates} operations={SSI_OPERATIONS} isDarkMode={isDarkMode} />}
             </div>
-            <div className="col-span-4">
+            <div className="lg:col-span-4">
               <ScoreCards 
                 ipccScore={ipccScore}
                 bicslScore={bicslScore}
@@ -245,28 +245,22 @@ export default function Home() {
           </div>
 
           {/* Third Row - Outbreak & Compliance */}
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-4">
-              <OutbreakTracker outbreaks={OUTBREAKS} isDarkMode={isDarkMode} />
-            </div>
-            <div className="col-span-4">
-              <ScreeningStatus 
-                screeningNotDone={screeningNotDone}
-                cultureNotDone={cultureNotDone}
-                bundleNotApplied={bundleNotApplied}
-                isDarkMode={isDarkMode}
-              />
-            </div>
-            <div className="col-span-4">
-              <DeviceAlerts alerts={femoralAlerts} allPatients={occupiedPatients} isDarkMode={isDarkMode} />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            <OutbreakTracker outbreaks={OUTBREAKS} isDarkMode={isDarkMode} />
+            <ScreeningStatus 
+              screeningNotDone={screeningNotDone}
+              cultureNotDone={cultureNotDone}
+              bundleNotApplied={bundleNotApplied}
+              isDarkMode={isDarkMode}
+            />
+            <DeviceAlerts alerts={femoralAlerts} allPatients={occupiedPatients} isDarkMode={isDarkMode} />
           </div>
 
           {/* Fourth Row - Patient Table */}
           <PatientTable patients={occupiedPatients} department={selectedDepartment} isDarkMode={isDarkMode} />
 
           {/* Footer */}
-          <footer className={`text-center py-2 ${theme.textMuted} text-sm`}>
+          <footer className={`text-center py-2 ${theme.textMuted} text-xs md:text-sm`}>
             <p>Last Updated: {lastUpdate?.toLocaleTimeString() || '--:--:--'} | {selectedHospital.name} - {selectedDepartment.fullName}</p>
           </footer>
         </main>
@@ -287,9 +281,9 @@ function MetricCard({ label, value, color, isDarkMode, alert }) {
   };
   
   return (
-    <div className={`bg-gradient-to-br ${colors[color]} border-2 rounded-xl p-4 text-center ${alert ? 'animate-pulse' : ''}`}>
-      <div className={`text-4xl font-bold ${colors[color].split(' ').pop()}`}>{value}</div>
-      <div className={isDarkMode ? 'text-sm text-gray-400' : 'text-sm text-gray-600'}>{label}</div>
+    <div className={`bg-gradient-to-br ${colors[color]} border-2 rounded-xl p-2 md:p-4 text-center ${alert ? 'animate-pulse' : ''}`}>
+      <div className={`text-2xl md:text-4xl font-bold ${colors[color].split(' ').pop()}`}>{value}</div>
+      <div className={`text-xs md:text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{label}</div>
     </div>
   );
 }

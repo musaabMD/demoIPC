@@ -51,83 +51,83 @@ export default function RoomOverview({ patients, isDarkMode }) {
   const mode = isDarkMode ? 'dark' : 'light';
 
   return (
-    <div className={`rounded-2xl border-2 p-4 ${theme.card}`}>
-      <div className="flex items-center justify-between mb-4">
+    <div className={`rounded-2xl border-2 p-3 md:p-4 ${theme.card}`}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 md:mb-4">
         <div>
-          <h2 className={`text-xl font-bold ${theme.header}`}>Bed Isolation Overview</h2>
-          <p className={`text-sm ${theme.textMuted}`}>{occupiedPatients.length} occupied, {emptyBeds.length} empty</p>
+          <h2 className={`text-lg md:text-xl font-bold ${theme.header}`}>Bed Isolation Overview</h2>
+          <p className={`text-xs md:text-sm ${theme.textMuted}`}>{occupiedPatients.length} occupied, {emptyBeds.length} empty</p>
         </div>
       </div>
 
       {/* Filter Buttons */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-1 md:gap-2 mb-3 md:mb-4 overflow-x-auto">
         <button
           onClick={() => setFilter('all')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'all' ? theme.filterActive : theme.filterBtn}`}
+          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'all' ? theme.filterActive : theme.filterBtn}`}
         >
-          All Beds ({occupiedPatients.length})
+          All ({occupiedPatients.length})
         </button>
         <button
           onClick={() => setFilter('airborne')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'airborne' ? 'bg-red-600 text-white' : theme.filterBtn}`}
+          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'airborne' ? 'bg-red-600 text-white' : theme.filterBtn}`}
         >
           Airborne ({counts.airborne})
         </button>
         <button
           onClick={() => setFilter('droplet')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'droplet' ? 'bg-blue-600 text-white' : theme.filterBtn}`}
+          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'droplet' ? 'bg-blue-600 text-white' : theme.filterBtn}`}
         >
           Droplet ({counts.droplet})
         </button>
         <button
           onClick={() => setFilter('contact')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'contact' ? 'bg-yellow-600 text-white' : theme.filterBtn}`}
+          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'contact' ? 'bg-yellow-600 text-white' : theme.filterBtn}`}
         >
           Contact ({counts.contact})
         </button>
         <button
           onClick={() => setFilter('protective')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'protective' ? 'bg-green-600 text-white' : theme.filterBtn}`}
+          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'protective' ? 'bg-green-600 text-white' : theme.filterBtn}`}
         >
           Protective ({counts.protective})
         </button>
         <button
           onClick={() => setFilter('isolated')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'isolated' ? 'bg-purple-600 text-white' : theme.filterBtn}`}
+          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'isolated' ? 'bg-purple-600 text-white' : theme.filterBtn}`}
         >
-          All Isolated ({counts.airborne + counts.droplet + counts.contact + counts.protective})
+          Isolated ({counts.airborne + counts.droplet + counts.contact + counts.protective})
         </button>
         <button
           onClick={() => setFilter('none')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'none' ? 'bg-gray-600 text-white' : theme.filterBtn}`}
+          className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap ${filter === 'none' ? 'bg-gray-600 text-white' : theme.filterBtn}`}
         >
-          No Isolation ({counts.none})
+          None ({counts.none})
         </button>
       </div>
 
       {/* Beds Grid */}
-      <div className="grid grid-cols-6 gap-3 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-3 mb-3 md:mb-4">
         {filteredPatients.map((patient) => {
           const colors = ISOLATION_COLORS[patient.isolation] || ISOLATION_COLORS['None'];
           return (
             <div
               key={patient.id}
-              className={`rounded-xl border-2 p-3 ${colors[mode]}`}
+              className={`rounded-xl border-2 p-2 md:p-3 ${colors[mode]}`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className={`text-2xl font-bold ${theme.text}`}>Bed {patient.bed}</span>
+              <div className="flex items-center justify-between mb-1 md:mb-2">
+                <span className={`text-lg md:text-2xl font-bold ${theme.text}`}>Bed {patient.bed}</span>
               </div>
-              <div className={`text-sm font-semibold ${theme.text}`}>{patient.name}</div>
+              <div className={`text-xs md:text-sm font-semibold ${theme.text} truncate`}>{patient.name}</div>
               <div className={`text-xs ${theme.textMuted}`}>{patient.mrn}</div>
-              <div className={`text-xs ${theme.textMuted} mt-1`}>{patient.diagnosis}</div>
-              <div className="mt-2">
-                <span className={`px-2 py-1 rounded text-xs font-semibold ${colors[mode]}`}>
+              <div className={`text-xs ${theme.textMuted} mt-1 truncate`}>{patient.diagnosis}</div>
+              <div className="mt-1 md:mt-2">
+                <span className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs font-semibold ${colors[mode]}`}>
                   {patient.isolation}
                 </span>
               </div>
               {patient.hasDevice && (
-                <div className={`text-xs ${theme.textMuted} mt-1`}>
-                  Device: {patient.deviceType}
+                <div className={`text-xs ${theme.textMuted} mt-1 truncate`}>
+                  {patient.deviceType}
                 </div>
               )}
             </div>
@@ -138,49 +138,49 @@ export default function RoomOverview({ patients, isDarkMode }) {
         {filter === 'all' && emptyBeds.map((bed) => (
           <div
             key={bed.id}
-            className={`rounded-xl border-2 p-3 ${isDarkMode ? 'bg-slate-800/30 border-slate-700 border-dashed' : 'bg-gray-50 border-gray-300 border-dashed'} opacity-60`}
+            className={`rounded-xl border-2 p-2 md:p-3 ${isDarkMode ? 'bg-slate-800/30 border-slate-700 border-dashed' : 'bg-gray-50 border-gray-300 border-dashed'} opacity-60`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className={`text-2xl font-bold ${theme.textMuted}`}>Bed {bed.bed}</span>
+            <div className="flex items-center justify-between mb-1 md:mb-2">
+              <span className={`text-lg md:text-2xl font-bold ${theme.textMuted}`}>Bed {bed.bed}</span>
             </div>
-            <div className={`text-sm ${theme.textMuted}`}>Empty</div>
-            <div className={`text-xs ${theme.textMuted} mt-2`}>Available</div>
+            <div className={`text-xs md:text-sm ${theme.textMuted}`}>Empty</div>
+            <div className={`text-xs ${theme.textMuted} mt-1 md:mt-2`}>Available</div>
           </div>
         ))}
       </div>
 
       {filteredPatients.length === 0 && (
-        <div className={`text-center py-8 ${theme.textMuted}`}>
+        <div className={`text-center py-6 md:py-8 ${theme.textMuted}`}>
           No patients matching filter
         </div>
       )}
 
       {/* Summary */}
-      <div className={`rounded-xl p-3 ${isDarkMode ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
-        <div className="grid grid-cols-6 gap-4 text-center">
+      <div className={`rounded-xl p-2 md:p-3 ${isDarkMode ? 'bg-slate-900/50' : 'bg-gray-100'}`}>
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4 text-center">
           <div>
-            <div className={`text-2xl font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>{counts.airborne}</div>
+            <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>{counts.airborne}</div>
             <div className={`text-xs ${theme.textMuted}`}>Airborne</div>
           </div>
           <div>
-            <div className={`text-2xl font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{counts.droplet}</div>
+            <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{counts.droplet}</div>
             <div className={`text-xs ${theme.textMuted}`}>Droplet</div>
           </div>
           <div>
-            <div className={`text-2xl font-bold ${isDarkMode ? 'text-yellow-400' : 'text-yellow-600'}`}>{counts.contact}</div>
+            <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-yellow-400' : 'text-yellow-600'}`}>{counts.contact}</div>
             <div className={`text-xs ${theme.textMuted}`}>Contact</div>
           </div>
           <div>
-            <div className={`text-2xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>{counts.protective}</div>
+            <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>{counts.protective}</div>
             <div className={`text-xs ${theme.textMuted}`}>Protective</div>
           </div>
           <div>
-            <div className={`text-2xl font-bold ${theme.textMuted}`}>{counts.none}</div>
-            <div className={`text-xs ${theme.textMuted}`}>No Isolation</div>
+            <div className={`text-lg md:text-2xl font-bold ${theme.textMuted}`}>{counts.none}</div>
+            <div className={`text-xs ${theme.textMuted}`}>No Iso</div>
           </div>
           <div>
-            <div className={`text-2xl font-bold ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>{emptyBeds.length}</div>
-            <div className={`text-xs ${theme.textMuted}`}>Empty Beds</div>
+            <div className={`text-lg md:text-2xl font-bold ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>{emptyBeds.length}</div>
+            <div className={`text-xs ${theme.textMuted}`}>Empty</div>
           </div>
         </div>
       </div>

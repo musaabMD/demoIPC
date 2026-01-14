@@ -1,77 +1,66 @@
 'use client';
 
 export default function DeviceAlerts({ alerts, allPatients, isDarkMode }) {
-  const deviceSummary = allPatients.filter(p => p.hasDevice).reduce((acc, p) => {
-    const type = p.deviceType;
-    if (!acc[type]) acc[type] = { count: 0, totalDays: 0 };
-    acc[type].count++;
-    acc[type].totalDays += p.deviceDays;
-    return acc;
-  }, {});
-
   const theme = {
     card: isDarkMode ? 'bg-slate-800/50 border-slate-700/50' : 'bg-white border-gray-200 shadow-sm',
     text: isDarkMode ? 'text-white' : 'text-gray-900',
     textMuted: isDarkMode ? 'text-gray-400' : 'text-gray-600',
-    subCard: isDarkMode ? 'bg-black/20' : 'bg-gray-100',
   };
 
+  const devicePatients = allPatients.filter(p => p.hasDevice);
+  const deviceCounts = devicePatients.reduce((acc, p) => {
+    acc[p.deviceType] = (acc[p.deviceType] || 0) + 1;
+    return acc;
+  }, {});
+
   return (
-    <div className={`rounded-2xl border-2 p-4 h-full ${theme.card}`}>
-      <div className="flex items-center gap-3 mb-4">
-        <svg className={`w-6 h-6 ${isDarkMode ? 'text-cyan-400' : 'text-cyan-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-        </svg>
-        <h2 className={`text-xl font-bold ${theme.text}`}>Device Monitoring</h2>
+    <div className={`rounded-2xl border-2 p-3 md:p-4 h-full ${theme.card}`}>
+      <div className="flex items-center justify-between mb-3 md:mb-4">
+        <div className="flex items-center gap-2 md:gap-3">
+          <svg className={`w-5 h-5 md:w-6 md:h-6 ${alerts.length > 0 ? (isDarkMode ? 'text-red-400' : 'text-red-600') : (isDarkMode ? 'text-green-400' : 'text-green-600')}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <h2 className={`text-lg md:text-xl font-bold ${theme.text}`}>Device Alerts</h2>
+        </div>
       </div>
 
       {/* Femoral Alerts */}
-      {alerts.length > 0 && (
-        <div className={`mb-4 p-3 rounded-xl animate-pulse ${isDarkMode ? 'bg-red-900/30 border-2 border-red-500' : 'bg-red-100 border-2 border-red-400'}`}>
-          <div className="flex items-center gap-2 mb-2">
-            <svg className={`w-5 h-5 ${isDarkMode ? 'text-red-400' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <span className={`font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>FEMORAL &gt; 7 DAYS - REMOVE NOW</span>
+      {alerts.length > 0 ? (
+        <div className={`${isDarkMode ? 'bg-red-900/30 border-red-500' : 'bg-red-100 border-red-300'} border-2 rounded-xl p-2 md:p-3 mb-3 md:mb-4 animate-pulse`}>
+          <div className={`font-bold text-sm ${isDarkMode ? 'text-red-400' : 'text-red-600'} mb-1 md:mb-2`}>
+            Femoral Line {'>'} 7 Days
           </div>
           <div className="space-y-1">
-            {alerts.map((p) => (
-              <div key={p.id} className={`flex items-center justify-between rounded-lg px-3 py-2 ${isDarkMode ? 'bg-black/30' : 'bg-white'}`}>
-                <div>
-                  <span className={`font-semibold ${theme.text}`}>Bed {p.bed}</span>
-                  <span className={`${theme.textMuted} ml-2`}>• {p.deviceType}</span>
-                </div>
-                <div className="text-right">
-                  <span className={`font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>{p.deviceDays} days</span>
-                  <span className={`text-xs ${theme.textMuted} block`}>{p.deviceSite}</span>
-                </div>
+            {alerts.map((alert) => (
+              <div key={alert.id} className={`text-xs md:text-sm ${theme.text}`}>
+                Bed {alert.bed}: {alert.name} - {alert.deviceDays} days
               </div>
             ))}
           </div>
         </div>
+      ) : (
+        <div className={`${isDarkMode ? 'bg-green-900/20' : 'bg-green-50'} rounded-xl p-2 md:p-3 mb-3 md:mb-4`}>
+          <p className={`text-xs md:text-sm ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+            No Femoral Line Alerts
+          </p>
+        </div>
       )}
 
       {/* Device Summary */}
-      <div className="space-y-2">
-        <h3 className={`text-sm font-semibold ${theme.textMuted}`}>Device Summary</h3>
-        {Object.entries(deviceSummary).map(([type, data]) => (
-          <div key={type} className={`flex items-center justify-between ${theme.subCard} rounded-lg px-3 py-2`}>
-            <span className={theme.text}>{type}</span>
-            <div className="flex gap-4">
-              <div className="text-center">
-                <div className={`text-lg font-bold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{data.count}</div>
-                <div className={`text-xs ${theme.textMuted}`}>Patients</div>
-              </div>
-              <div className="text-center">
-                <div className={`text-lg font-bold ${isDarkMode ? 'text-purple-400' : 'text-purple-600'}`}>{data.totalDays}</div>
-                <div className={`text-xs ${theme.textMuted}`}>Total Days</div>
-              </div>
+      <div className={`${isDarkMode ? 'bg-slate-900/50' : 'bg-gray-100'} rounded-xl p-2 md:p-3`}>
+        <div className={`font-semibold text-xs md:text-sm ${theme.text} mb-2`}>Device Summary</div>
+        <div className="grid grid-cols-2 gap-1 md:gap-2">
+          {Object.entries(deviceCounts).map(([device, count]) => (
+            <div key={device} className={`text-xs ${theme.textMuted} flex justify-between`}>
+              <span className="truncate">{device}</span>
+              <span className={`font-bold ${theme.text} ml-1`}>{count}</span>
             </div>
-          </div>
-        ))}
-        {Object.keys(deviceSummary).length === 0 && (
-          <div className={`text-center py-4 ${theme.textMuted}`}>No devices in use</div>
-        )}
+          ))}
+        </div>
+        <div className={`mt-2 pt-2 border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-300'} flex justify-between text-xs md:text-sm`}>
+          <span className={theme.textMuted}>Total on Devices</span>
+          <span className={`font-bold ${theme.text}`}>{devicePatients.length}</span>
+        </div>
       </div>
     </div>
   );

@@ -61,14 +61,13 @@ const generateLabData = () => {
     const test = serologyTests[Math.floor(seededRandom() * serologyTests.length)];
     const isPositive = seededRandom() > 0.7;
     const hospital = hospitals[Math.floor(seededRandom() * hospitals.length)];
-    const isOutpatient = seededRandom() > 0.7; // 30% outpatient
+    const isOutpatient = seededRandom() > 0.7;
     const dept = isOutpatient 
       ? outpatientDepts[Math.floor(seededRandom() * outpatientDepts.length)]
       : inpatientDepts[Math.floor(seededRandom() * inpatientDepts.length)];
     const age = Math.floor(seededRandom() * 70) + 1;
     const isolationDone = isPositive && !isOutpatient ? seededRandom() > 0.3 : null;
     
-    // Generate dates within last 7 days
     const daysAgo = Math.floor(seededRandom() * 7);
     const orderDate = new Date(today);
     orderDate.setDate(orderDate.getDate() - daysAgo);
@@ -105,7 +104,7 @@ const generateLabData = () => {
     const test = afbTests[Math.floor(seededRandom() * afbTests.length)];
     const isPositive = seededRandom() > 0.85;
     const hospital = hospitals[Math.floor(seededRandom() * hospitals.length)];
-    const isOutpatient = seededRandom() > 0.8; // 20% outpatient for TB
+    const isOutpatient = seededRandom() > 0.8;
     const dept = isOutpatient 
       ? outpatientDepts[Math.floor(seededRandom() * outpatientDepts.length)]
       : inpatientDepts[Math.floor(seededRandom() * inpatientDepts.length)];
@@ -150,7 +149,7 @@ const generateLabData = () => {
     const hasGrowth = seededRandom() > 0.4;
     const organism = hasGrowth ? organisms[Math.floor(seededRandom() * (organisms.length - 1))] : 'No Growth';
     const hospital = hospitals[Math.floor(seededRandom() * hospitals.length)];
-    const isOutpatient = seededRandom() > 0.85; // 15% outpatient for cultures
+    const isOutpatient = seededRandom() > 0.85;
     const dept = isOutpatient 
       ? outpatientDepts[Math.floor(seededRandom() * outpatientDepts.length)]
       : inpatientDepts[Math.floor(seededRandom() * inpatientDepts.length)];
@@ -238,7 +237,6 @@ export default function LabsTab({ isDarkMode }) {
       if (filters.actionRequired && !lab.actionRequired) return false;
       if (filters.isolationPending && !(lab.isolationRequired && !lab.isolationDone)) return false;
       
-      // Date filter
       if (filters.dateRange === 'today') {
         const orderDate = new Date(lab.orderDate);
         orderDate.setHours(0, 0, 0, 0);
@@ -272,33 +270,33 @@ export default function LabsTab({ isDarkMode }) {
   const hospitals = ['King Fahad Hospital', 'Madinah General Hospital', 'Ohud Hospital', 'Maternity Hospital'];
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-2 md:p-4 space-y-3 md:space-y-4">
       {/* Stats Row */}
-      <div className="grid grid-cols-6 gap-3">
-        <StatCard label="Total Results" value={labData.length} color="blue" isDarkMode={isDarkMode} />
-        <StatCard label="Ordered Today" value={stats.orderedToday} color="cyan" isDarkMode={isDarkMode} />
-        <StatCard label="Positive Results" value={stats.positive} color="orange" isDarkMode={isDarkMode} />
-        <StatCard label="TB Positive" value={stats.tbPositive} color="red" isDarkMode={isDarkMode} alert={stats.tbPositive > 0} />
-        <StatCard label="MDRO Detected" value={stats.mdroPositive} color="purple" isDarkMode={isDarkMode} />
-        <StatCard label="Isolation Pending" value={stats.isolationPending} color="yellow" isDarkMode={isDarkMode} alert={stats.isolationPending > 0} />
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
+        <StatCard label="Total" value={labData.length} color="blue" isDarkMode={isDarkMode} />
+        <StatCard label="Today" value={stats.orderedToday} color="cyan" isDarkMode={isDarkMode} />
+        <StatCard label="Positive" value={stats.positive} color="orange" isDarkMode={isDarkMode} />
+        <StatCard label="TB+" value={stats.tbPositive} color="red" isDarkMode={isDarkMode} alert={stats.tbPositive > 0} />
+        <StatCard label="MDRO" value={stats.mdroPositive} color="purple" isDarkMode={isDarkMode} />
+        <StatCard label="Iso Pending" value={stats.isolationPending} color="yellow" isDarkMode={isDarkMode} alert={stats.isolationPending > 0} />
       </div>
 
       {/* TB Alarm Banner */}
       {stats.tbPositive > 0 && (
-        <div className={`p-4 rounded-xl border-2 ${isDarkMode ? 'bg-red-900/30 border-red-500' : 'bg-red-100 border-red-400'} animate-pulse`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <svg className={`w-8 h-8 ${isDarkMode ? 'text-red-400' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className={`p-3 md:p-4 rounded-xl border-2 ${isDarkMode ? 'bg-red-900/30 border-red-500' : 'bg-red-100 border-red-400'} animate-pulse`}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2 md:gap-3">
+              <svg className={`w-6 h-6 md:w-8 md:h-8 ${isDarkMode ? 'text-red-400' : 'text-red-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div>
-                <div className={`font-bold text-lg ${isDarkMode ? 'text-red-400' : 'text-red-700'}`}>TB ALERT - IMMEDIATE ACTION REQUIRED</div>
-                <div className={isDarkMode ? 'text-red-300' : 'text-red-600'}>{stats.tbPositive} patient(s) with positive AFB/TB results require airborne isolation</div>
+                <div className={`font-bold text-sm md:text-lg ${isDarkMode ? 'text-red-400' : 'text-red-700'}`}>TB ALERT - IMMEDIATE ACTION</div>
+                <div className={`text-xs md:text-sm ${isDarkMode ? 'text-red-300' : 'text-red-600'}`}>{stats.tbPositive} patient(s) need airborne isolation</div>
               </div>
             </div>
             <button 
               onClick={() => setFilters(f => ({ ...f, category: 'AFB', result: 'Positive' }))}
-              className={`px-4 py-2 rounded-lg font-semibold ${isDarkMode ? 'bg-red-600 text-white hover:bg-red-500' : 'bg-red-600 text-white hover:bg-red-700'}`}
+              className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-semibold ${isDarkMode ? 'bg-red-600 text-white hover:bg-red-500' : 'bg-red-600 text-white hover:bg-red-700'}`}
             >
               View TB Cases
             </button>
@@ -307,34 +305,35 @@ export default function LabsTab({ isDarkMode }) {
       )}
 
       {/* Filters */}
-      <div className={`rounded-2xl border-2 p-4 ${theme.card}`}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className={`text-xl font-bold ${theme.text}`}>Lab Results - Infection Control Tracking</h2>
-          <div className={`text-sm ${theme.textMuted}`}>Madina Region Hospitals</div>
+      <div className={`rounded-2xl border-2 p-3 md:p-4 ${theme.card}`}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 md:mb-4">
+          <h2 className={`text-lg md:text-xl font-bold ${theme.text}`}>Lab Results - Infection Control</h2>
+          <div className={`text-xs md:text-sm ${theme.textMuted}`}>Madina Region</div>
         </div>
         
-        <div className="grid grid-cols-8 gap-3 mb-4">
+        {/* Filter Dropdowns */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 mb-3 md:mb-4">
           <input
             type="text"
-            placeholder="Search MRN, Test, Organism..."
+            placeholder="Search..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`${theme.input} px-3 py-2 rounded-lg border text-sm col-span-2`}
+            className={`${theme.input} px-2 md:px-3 py-1.5 md:py-2 rounded-lg border text-xs md:text-sm col-span-2`}
           />
           <select 
             value={filters.hospital}
             onChange={(e) => setFilters(f => ({ ...f, hospital: e.target.value }))}
-            className={`${theme.select} px-3 py-2 rounded-lg border text-sm`}
+            className={`${theme.select} px-2 md:px-3 py-1.5 md:py-2 rounded-lg border text-xs md:text-sm`}
           >
             <option value="all">All Hospitals</option>
-            {hospitals.map(h => <option key={h} value={h}>{h}</option>)}
+            {hospitals.map(h => <option key={h} value={h}>{h.replace(' Hospital', '')}</option>)}
           </select>
           <select 
             value={filters.category}
             onChange={(e) => setFilters(f => ({ ...f, category: e.target.value }))}
-            className={`${theme.select} px-3 py-2 rounded-lg border text-sm`}
+            className={`${theme.select} px-2 md:px-3 py-1.5 md:py-2 rounded-lg border text-xs md:text-sm`}
           >
-            <option value="all">All Categories</option>
+            <option value="all">All Types</option>
             <option value="Serology">Serology</option>
             <option value="AFB">AFB (TB)</option>
             <option value="Culture">Culture</option>
@@ -342,16 +341,16 @@ export default function LabsTab({ isDarkMode }) {
           <select 
             value={filters.result}
             onChange={(e) => setFilters(f => ({ ...f, result: e.target.value }))}
-            className={`${theme.select} px-3 py-2 rounded-lg border text-sm`}
+            className={`${theme.select} px-2 md:px-3 py-1.5 md:py-2 rounded-lg border text-xs md:text-sm`}
           >
             <option value="all">All Results</option>
-            <option value="Positive">Positive Only</option>
-            <option value="Negative">Negative Only</option>
+            <option value="Positive">Positive</option>
+            <option value="Negative">Negative</option>
           </select>
           <select 
             value={filters.patientType}
             onChange={(e) => setFilters(f => ({ ...f, patientType: e.target.value }))}
-            className={`${theme.select} px-3 py-2 rounded-lg border text-sm`}
+            className={`${theme.select} px-2 md:px-3 py-1.5 md:py-2 rounded-lg border text-xs md:text-sm`}
           >
             <option value="all">All Patients</option>
             <option value="Inpatient">Inpatient</option>
@@ -360,7 +359,7 @@ export default function LabsTab({ isDarkMode }) {
           <select 
             value={filters.dateRange}
             onChange={(e) => setFilters(f => ({ ...f, dateRange: e.target.value }))}
-            className={`${theme.select} px-3 py-2 rounded-lg border text-sm`}
+            className={`${theme.select} px-2 md:px-3 py-1.5 md:py-2 rounded-lg border text-xs md:text-sm`}
           >
             <option value="all">All Dates</option>
             <option value="today">Today</option>
@@ -368,83 +367,74 @@ export default function LabsTab({ isDarkMode }) {
           </select>
           <button
             onClick={() => setFilters({ hospital: 'all', category: 'all', result: 'all', patientType: 'all', dateRange: 'all', actionRequired: false, isolationPending: false })}
-            className={`px-3 py-2 rounded-lg text-sm font-medium ${isDarkMode ? 'bg-slate-600 text-white hover:bg-slate-500' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            className={`px-2 md:px-3 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-medium ${isDarkMode ? 'bg-slate-600 text-white hover:bg-slate-500' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
           >
             Clear
           </button>
         </div>
         
         {/* Quick Filters */}
-        <div className="flex gap-2 mb-4">
+        <div className="flex flex-wrap gap-1 md:gap-2 mb-3 md:mb-4">
           <button
             onClick={() => setFilters(f => ({ ...f, actionRequired: !f.actionRequired }))}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filters.actionRequired 
-                ? 'bg-red-600 text-white'
-                : theme.filterBtn
+            className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              filters.actionRequired ? 'bg-red-600 text-white' : theme.filterBtn
             }`}
           >
-            Action Required ({stats.actionRequired})
+            Action ({stats.actionRequired})
           </button>
           <button
             onClick={() => setFilters(f => ({ ...f, isolationPending: !f.isolationPending }))}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filters.isolationPending 
-                ? 'bg-yellow-600 text-white'
-                : theme.filterBtn
+            className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              filters.isolationPending ? 'bg-yellow-600 text-white' : theme.filterBtn
             }`}
           >
-            Isolation Pending ({stats.isolationPending})
+            Iso Pending ({stats.isolationPending})
           </button>
           <button
             onClick={() => setFilters(f => ({ ...f, dateRange: 'today' }))}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filters.dateRange === 'today' 
-                ? 'bg-cyan-600 text-white'
-                : theme.filterBtn
+            className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-medium transition-colors ${
+              filters.dateRange === 'today' ? 'bg-cyan-600 text-white' : theme.filterBtn
             }`}
           >
-            Ordered Today ({stats.orderedToday})
+            Today ({stats.orderedToday})
           </button>
           <button
             onClick={() => setFilters(f => ({ ...f, category: 'AFB', result: 'Positive' }))}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${theme.filterBtn}`}
+            className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-medium ${theme.filterBtn}`}
           >
-            TB Cases ({stats.tbPositive})
+            TB ({stats.tbPositive})
           </button>
           <button
             onClick={() => setFilters(f => ({ ...f, category: 'Serology', result: 'Positive' }))}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${theme.filterBtn}`}
+            className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-medium ${theme.filterBtn}`}
           >
-            Serology Positive
+            Serology+
           </button>
           <button
             onClick={() => setFilters(f => ({ ...f, category: 'Culture', result: 'Positive' }))}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${theme.filterBtn}`}
+            className={`px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs font-medium ${theme.filterBtn}`}
           >
-            Culture Positive
+            Culture+
           </button>
         </div>
 
         {/* Results Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto -mx-3 md:mx-0">
+          <table className="w-full text-xs md:text-sm min-w-[800px]">
             <thead>
               <tr className={theme.header}>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Status</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Lab ID</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Patient</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Age/Gender</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Type</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Hospital</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Dept</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Test</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Category</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Result</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Value</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Order Date</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Isolation</th>
-                <th className={`px-3 py-2 text-left ${theme.textMuted}`}>Notified</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Status</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Patient</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted} hidden sm:table-cell`}>Age</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Type</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted} hidden lg:table-cell`}>Hospital</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Dept</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Test</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Result</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted} hidden md:table-cell`}>Value</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Order</th>
+                <th className={`px-2 md:px-3 py-2 text-left ${theme.textMuted}`}>Isolation</th>
               </tr>
             </thead>
             <tbody>
@@ -456,85 +446,57 @@ export default function LabsTab({ isDarkMode }) {
                     lab.actionRequired ? (isDarkMode ? 'bg-yellow-900/20' : 'bg-yellow-50') : ''
                   }`}
                 >
-                  <td className="px-3 py-2">
+                  <td className="px-2 md:px-3 py-2">
                     {lab.tbAlarm && (
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${isDarkMode ? 'bg-red-600 text-white' : 'bg-red-500 text-white'} animate-pulse`}>
-                        TB ALERT
+                      <span className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs font-bold ${isDarkMode ? 'bg-red-600 text-white' : 'bg-red-500 text-white'} animate-pulse`}>
+                        TB
                       </span>
                     )}
                     {!lab.tbAlarm && lab.actionRequired && (
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${isDarkMode ? 'bg-yellow-600 text-white' : 'bg-yellow-500 text-white'}`}>
-                        ACTION
-                      </span>
-                    )}
-                    {!lab.tbAlarm && !lab.actionRequired && lab.critical && (
-                      <span className={`px-2 py-1 rounded text-xs ${isDarkMode ? 'bg-orange-600/50 text-orange-300' : 'bg-orange-100 text-orange-700'}`}>
-                        Critical
+                      <span className={`px-1.5 md:px-2 py-0.5 md:py-1 rounded text-xs font-bold ${isDarkMode ? 'bg-yellow-600 text-white' : 'bg-yellow-500 text-white'}`}>
+                        ACT
                       </span>
                     )}
                   </td>
-                  <td className={`px-3 py-2 font-mono text-xs ${theme.textMuted}`}>{lab.labId}</td>
-                  <td className="px-3 py-2">
+                  <td className="px-2 md:px-3 py-2">
                     <div className={`font-semibold ${theme.text}`}>{lab.patientId}</div>
                   </td>
-                  <td className={`px-3 py-2 ${theme.textMuted}`}>{lab.age} / {lab.gender}</td>
-                  <td className="px-3 py-2">
-                    <span className={`px-2 py-1 rounded text-xs ${
+                  <td className={`px-2 md:px-3 py-2 ${theme.textMuted} hidden sm:table-cell`}>{lab.age}/{lab.gender}</td>
+                  <td className="px-2 md:px-3 py-2">
+                    <span className={`px-1.5 py-0.5 rounded text-xs ${
                       lab.patientType === 'Inpatient'
                         ? (isDarkMode ? 'bg-blue-600/30 text-blue-300' : 'bg-blue-100 text-blue-700')
                         : (isDarkMode ? 'bg-gray-600/30 text-gray-300' : 'bg-gray-100 text-gray-700')
                     }`}>
-                      {lab.patientType}
+                      {lab.patientType === 'Inpatient' ? 'IP' : 'OP'}
                     </span>
                   </td>
-                  <td className={`px-3 py-2 text-xs ${theme.textMuted}`}>{lab.hospital.replace(' Hospital', '')}</td>
-                  <td className={`px-3 py-2 text-xs ${theme.textMuted}`}>{lab.department}</td>
-                  <td className={`px-3 py-2 ${theme.text}`}>{lab.testName}</td>
-                  <td className="px-3 py-2">
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      lab.category === 'AFB' ? (isDarkMode ? 'bg-red-600/30 text-red-300' : 'bg-red-100 text-red-700') :
-                      lab.category === 'Serology' ? (isDarkMode ? 'bg-purple-600/30 text-purple-300' : 'bg-purple-100 text-purple-700') :
-                      (isDarkMode ? 'bg-cyan-600/30 text-cyan-300' : 'bg-cyan-100 text-cyan-700')
-                    }`}>
-                      {lab.category}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2">
-                    <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                  <td className={`px-2 md:px-3 py-2 text-xs ${theme.textMuted} hidden lg:table-cell`}>{lab.hospital.replace(' Hospital', '')}</td>
+                  <td className={`px-2 md:px-3 py-2 text-xs ${theme.textMuted}`}>{lab.department}</td>
+                  <td className={`px-2 md:px-3 py-2 ${theme.text}`}>{lab.testName}</td>
+                  <td className="px-2 md:px-3 py-2">
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-semibold ${
                       lab.result === 'Positive'
                         ? (isDarkMode ? 'bg-red-600/50 text-red-300' : 'bg-red-100 text-red-700')
                         : (isDarkMode ? 'bg-green-600/30 text-green-300' : 'bg-green-100 text-green-700')
                     }`}>
-                      {lab.result}
+                      {lab.result === 'Positive' ? '+' : '-'}
                     </span>
                   </td>
-                  <td className={`px-3 py-2 text-xs font-medium ${
+                  <td className={`px-2 md:px-3 py-2 text-xs font-medium ${
                     lab.mdro ? (isDarkMode ? 'text-orange-400' : 'text-orange-600') : theme.textMuted
-                  }`}>
+                  } hidden md:table-cell`}>
                     {lab.value}
                   </td>
-                  <td className={`px-3 py-2 text-xs ${theme.textMuted}`}>{lab.orderDate}</td>
-                  <td className="px-3 py-2">
+                  <td className={`px-2 md:px-3 py-2 text-xs ${theme.textMuted}`}>{lab.orderDate}</td>
+                  <td className="px-2 md:px-3 py-2">
                     {lab.isolationRequired ? (
-                      <span className={`px-2 py-1 rounded text-xs ${
+                      <span className={`px-1.5 py-0.5 rounded text-xs ${
                         lab.isolationDone
                           ? (isDarkMode ? 'bg-green-600/30 text-green-300' : 'bg-green-100 text-green-700')
                           : (isDarkMode ? 'bg-red-600/50 text-red-300' : 'bg-red-100 text-red-700')
                       }`}>
-                        {lab.isolationDone ? 'Done' : 'PENDING'}
-                      </span>
-                    ) : (
-                      <span className={theme.textMuted}>-</span>
-                    )}
-                  </td>
-                  <td className="px-3 py-2">
-                    {lab.notified !== null ? (
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        lab.notified
-                          ? (isDarkMode ? 'bg-green-600/30 text-green-300' : 'bg-green-100 text-green-700')
-                          : (isDarkMode ? 'bg-yellow-600/30 text-yellow-300' : 'bg-yellow-100 text-yellow-700')
-                      }`}>
-                        {lab.notified ? 'Yes' : 'No'}
+                        {lab.isolationDone ? 'Done' : 'PEND'}
                       </span>
                     ) : (
                       <span className={theme.textMuted}>-</span>
@@ -547,14 +509,14 @@ export default function LabsTab({ isDarkMode }) {
         </div>
 
         {filteredLabs.length === 0 && (
-          <div className={`text-center py-8 ${theme.textMuted}`}>
-            No lab results found matching filters
+          <div className={`text-center py-6 md:py-8 ${theme.textMuted}`}>
+            No results found
           </div>
         )}
 
         {filteredLabs.length > 50 && (
-          <div className={`text-center py-4 ${theme.textMuted}`}>
-            Showing 50 of {filteredLabs.length} results
+          <div className={`text-center py-3 md:py-4 ${theme.textMuted} text-xs md:text-sm`}>
+            Showing 50 of {filteredLabs.length}
           </div>
         )}
       </div>
@@ -574,9 +536,9 @@ function StatCard({ label, value, color, isDarkMode, alert }) {
   };
   
   return (
-    <div className={`bg-gradient-to-br ${colors[color]} border-2 rounded-xl p-4 text-center ${alert ? 'animate-pulse' : ''}`}>
-      <div className={`text-4xl font-bold ${colors[color].split(' ').pop()}`}>{value}</div>
-      <div className={isDarkMode ? 'text-sm text-gray-400' : 'text-sm text-gray-600'}>{label}</div>
+    <div className={`bg-gradient-to-br ${colors[color]} border-2 rounded-xl p-2 md:p-4 text-center ${alert ? 'animate-pulse' : ''}`}>
+      <div className={`text-xl md:text-4xl font-bold ${colors[color].split(' ').pop()}`}>{value}</div>
+      <div className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{label}</div>
     </div>
   );
 }
