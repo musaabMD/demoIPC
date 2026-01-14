@@ -83,9 +83,9 @@ export default function SplashScreen({ onComplete }) {
 
         {/* Title */}
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-          ICU Infection Control
+          Public Health Dashboard
         </h1>
-        <p className="text-blue-300 text-lg mb-8">Dashboard</p>
+        <p className="text-blue-300 text-lg mb-8">Surveillance System</p>
 
         {/* Loading Bar */}
         <div className="w-64 mx-auto">

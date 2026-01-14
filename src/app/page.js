@@ -188,7 +188,7 @@ export default function Home() {
     return (
       <div className={`min-h-screen ${theme.bg} flex items-center justify-center`}>
         <div className="text-center">
-          <div className={`text-xl md:text-2xl ${theme.text} font-bold`}>ICU Infection Control Dashboard</div>
+          <div className={`text-xl md:text-2xl ${theme.text} font-bold`}>Public Health Surveillance System</div>
           <div className={theme.textMuted + " mt-2"}>Loading...</div>
         </div>
       </div>

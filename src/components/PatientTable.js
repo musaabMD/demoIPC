@@ -33,7 +33,6 @@ export default function PatientTable({ patients, department, isDarkMode }) {
     'Airborne': isDarkMode ? 'bg-red-500/30 text-red-300' : 'bg-red-100 text-red-700',
     'Droplet': isDarkMode ? 'bg-blue-500/30 text-blue-300' : 'bg-blue-100 text-blue-700',
     'Contact': isDarkMode ? 'bg-yellow-500/30 text-yellow-300' : 'bg-yellow-100 text-yellow-700',
-    'Protective': isDarkMode ? 'bg-green-500/30 text-green-300' : 'bg-green-100 text-green-700',
     'None': isDarkMode ? 'bg-slate-600/50 text-gray-400' : 'bg-gray-100 text-gray-500',
   };
 

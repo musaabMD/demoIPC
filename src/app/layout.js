@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "ICU Dashboard - Healthcare Monitoring",
-  description: "Real-time ICU monitoring dashboard for infection control and patient safety",
+  title: "Public Health Dashboard - Surveillance System",
+  description: "Real-time public health surveillance dashboard for infection control and disease monitoring",
 };
 
 export default function RootLayout({ children }) {

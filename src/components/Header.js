@@ -29,7 +29,7 @@ export default function Header({ selectedHospital, hospitals, onHospitalChange, 
               </svg>
             </div>
             <div>
-              <h1 className={`text-lg md:text-2xl font-bold ${theme.text}`}>ICU Infection Control Dashboard</h1>
+              <h1 className={`text-lg md:text-2xl font-bold ${theme.text}`}>Public Health Surveillance System</h1>
               <p className={`text-xs md:text-sm ${theme.textMuted}`}>{selectedHospital.name}</p>
             </div>
           </div>
